@@ -23,6 +23,10 @@ from time import time
 from urllib.parse import urlencode
 from urllib.parse import quote
 from gmssl import sm3, func
+try:
+    from typing import Union  # 添加这一行以支持Union类型
+except ImportError:
+    pass  # 如果typing不可用，则忽略
 
 __all__ = ["ABogus", ]
 
@@ -522,7 +526,7 @@ class ABogus:
         # return self.sum(self.sum(params + self.__end_string))
 
     @classmethod
-    def sm3_to_array(cls, data: str | list) -> list[int]:
+    def sm3_to_array(cls, data):
         """
         代码参考: https://github.com/Johnserf-Seed/f2/blob/main/f2/utils/abogus.py
 
@@ -599,14 +603,14 @@ class ABogus:
         return ''.join(cipher)
 
     def get_value(self,
-                  url_params: dict | str,
+                  url_params,
                   method="GET",
                   start_time=0,
                   end_time=0,
                   random_num_1=None,
                   random_num_2=None,
                   random_num_3=None,
-                  ) -> str:
+                  ):
         string_1 = self.generate_string_1(
             random_num_1,
             random_num_2,
