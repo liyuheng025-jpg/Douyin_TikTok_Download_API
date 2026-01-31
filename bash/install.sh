@@ -56,6 +56,6 @@ echo 'Starting Douyin_TikTok_Download_API service | 启动Douyin_TikTok_Download
 sudo systemctl start Douyin_TikTok_Download_API.service
 
 echo 'Douyin_TikTok_Download_API installation complete! | Douyin_TikTok_Download_API安装完成!'
-echo 'You can access the API at http://localhost:80 | 您可以在http://localhost:80访问API'
+echo 'You can access the API at http://localhost:8001 | 您可以在http://localhost:8001访问API'
 echo 'You can change the port in config.yaml under the /www/wwwroot/Douyin_TikTok_Download_API directory | 您可以在/www/wwwroot/Douyin_TikTok_Download_API目录下的config.yaml中更改端口'
 echo 'If the API is not working, please change the cookie in config.yaml under the /www/wwwroot/Douyin_TikTok_Download_API/crawler/[Douyin/TikTok]/[APP/Web]/config.yaml directory | 如果API无法工作，请更改/www/wwwroot/Douyin_TikTok_Download_API/crawler/[Douyin/TikTok]/[APP/Web]/config.yaml目录下的cookie'
