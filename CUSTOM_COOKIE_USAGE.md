@@ -1,6 +1,6 @@
 # 自定义Cookie配置使用说明
 
-本文档介绍了如何使用独立的Cookie配置文件和脚本来管理抖音API的Cookie。
+本文档介绍了如何使用多种方式管理抖音API的Cookie，包括固定路径文件、独立配置文件和脚本更新。
 
 ## 目录结构
 
@@ -12,6 +12,7 @@
 │           ├── config.yaml          # 原始配置文件
 │           ├── douyin_cookies.yaml  # 新增：独立的Cookie配置文件
 │           └── ...
+├── /opt/tiger/toutiao/log/app/douyin_cookie.txt  # 生产环境Cookie文件（最高优先级）
 ├── update_douyin_cookie.sh         # 更新Cookie脚本（仅更新配置文件）
 ├── advanced_update_cookie.sh       # 高级更新脚本（同时更新API和配置文件）
 └── ...
@@ -19,11 +20,23 @@
 
 ## 配置文件说明
 
-### 1. 独立Cookie配置文件
+### 1. 固定路径Cookie文件（最高优先级）
+
+- **路径**: `/opt/tiger/toutiao/log/app/douyin_cookie.txt`
+- **用途**: 从固定路径读取Cookie，主要用于生产环境
+- **优先级**: 最高优先级，如果此文件存在，则会覆盖其他配置中的Cookie值
+
+### 2. 独立Cookie配置文件
 
 - **路径**: `crawlers/douyin/web/douyin_cookies.yaml`
 - **用途**: 专门存放抖音Web版的Cookie信息
-- **优先级**: 系统会优先读取此文件，如果不存在则回退到原始配置文件
+- **优先级**: 第二优先级，如果固定路径文件不存在，则读取此文件
+
+### 3. 默认配置文件
+
+- **路径**: `crawlers/douyin/web/config.yaml`
+- **用途**: 原始配置文件
+- **优先级**: 最低优先级，当以上两种方式都不可用时使用
 
 ### 2. 配置文件内容
 
