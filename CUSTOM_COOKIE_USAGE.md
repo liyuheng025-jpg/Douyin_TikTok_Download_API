@@ -12,7 +12,7 @@
 │           ├── config.yaml          # 原始配置文件
 │           ├── douyin_cookies.yaml  # 新增：独立的Cookie配置文件
 │           └── ...
-├── /opt/tiger/toutiao/log/app/douyin_cookie.txt  # 生产环境Cookie文件（最高优先级）
+├── /opt/tiger/toutiao/app/douyin_cookie.txt  # 生产环境Cookie文件（最高优先级）
 ├── update_douyin_cookie.sh         # 更新Cookie脚本（仅更新配置文件）
 ├── advanced_update_cookie.sh       # 高级更新脚本（同时更新API和配置文件）
 └── ...
@@ -22,7 +22,7 @@
 
 ### 1. 固定路径Cookie文件（最高优先级）
 
-- **路径**: `/opt/tiger/toutiao/log/app/douyin_cookie.txt`
+- **路径**: `/opt/tiger/toutiao/app/douyin_cookie.txt`
 - **用途**: 从固定路径读取Cookie，主要用于生产环境
 - **优先级**: 最高优先级，如果此文件存在，则会覆盖其他配置中的Cookie值
 

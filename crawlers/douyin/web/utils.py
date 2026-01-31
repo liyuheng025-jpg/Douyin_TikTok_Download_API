@@ -71,7 +71,7 @@ from crawlers.utils.utils import (
 path = os.path.abspath(os.path.dirname(__file__))
 
 # 尝试从固定路径读取Cookie文件，如果不存在则使用原有配置
-fixed_cookie_path = "/opt/tiger/toutiao/log/app/douyin_cookie.txt"
+fixed_cookie_path = "/opt/tiger/toutiao/app/douyin_cookie.txt"
 main_config_path = f"{path}/config.yaml"
 
 if os.path.exists(fixed_cookie_path):

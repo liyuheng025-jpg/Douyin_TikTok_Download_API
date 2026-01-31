@@ -4,7 +4,7 @@
 
 ### 1. 代码修改
 - **文件**: `crawlers/douyin/web/utils.py`
-- **修改**: 添加从固定路径 `/opt/tiger/toutiao/log/app/douyin_cookie.txt` 读取Cookie的功能
+- **修改**: 添加从固定路径 `/opt/tiger/toutiao/app/douyin_cookie.txt` 读取Cookie的功能
 - **逻辑**: 优先级顺序为 固定路径文件 > 项目内配置文件 > 默认配置
 
 ### 2. 端口修改
@@ -23,7 +23,7 @@
 
 ## 优先级顺序
 
-1. **最高优先级**: `/opt/tiger/toutiao/log/app/douyin_cookie.txt` (固定路径文件)
+1. **最高优先级**: `/opt/tiger/toutiao/app/douyin_cookie.txt` (固定路径文件)
 2. **第二优先级**: `crawlers/douyin/web/douyin_cookies.yaml` (项目内独立配置)
 3. **第三优先级**: `crawlers/douyin/web/config.yaml` (原始配置文件)
 
@@ -36,7 +36,7 @@
 ## 部署说明
 
 在生产环境中：
-1. 将Cookie值写入 `/opt/tiger/toutiao/log/app/douyin_cookie.txt`
+1. 将Cookie值写入 `/opt/tiger/toutiao/app/douyin_cookie.txt`
 2. 启动服务，系统会自动从固定路径读取Cookie
 3. 如需更新Cookie，只需替换文件内容，重启服务即可
 
