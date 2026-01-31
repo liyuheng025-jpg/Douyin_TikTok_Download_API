@@ -3,8 +3,15 @@
 ## 修改内容概述
 
 ### 1. 代码修改
+
+#### 1.1 抖音Cookie配置
 - **文件**: `crawlers/douyin/web/utils.py`
 - **修改**: 添加从固定路径 `/opt/tiger/toutiao/app/douyin_cookie.txt` 读取Cookie的功能
+- **逻辑**: 优先级顺序为 固定路径文件 > 项目内配置文件 > 默认配置
+
+#### 1.2 TikTok Cookie配置
+- **文件**: `crawlers/tiktok/web/utils.py`
+- **修改**: 添加从固定路径 `/opt/tiger/toutiao/app/tiktok_cookie.txt` 读取Cookie的功能
 - **逻辑**: 优先级顺序为 固定路径文件 > 项目内配置文件 > 默认配置
 
 ### 2. 端口修改
@@ -23,9 +30,14 @@
 
 ## 优先级顺序
 
+### 抖音配置优先级
 1. **最高优先级**: `/opt/tiger/toutiao/app/douyin_cookie.txt` (固定路径文件)
 2. **第二优先级**: `crawlers/douyin/web/douyin_cookies.yaml` (项目内独立配置)
 3. **第三优先级**: `crawlers/douyin/web/config.yaml` (原始配置文件)
+
+### TikTok配置优先级
+1. **最高优先级**: `/opt/tiger/toutiao/app/tiktok_cookie.txt` (固定路径文件)
+2. **第二优先级**: `crawlers/tiktok/web/config.yaml` (原始配置文件)
 
 ## 验证步骤
 
@@ -36,8 +48,15 @@
 ## 部署说明
 
 在生产环境中：
-1. 将Cookie值写入 `/opt/tiger/toutiao/app/douyin_cookie.txt`
-2. 启动服务，系统会自动从固定路径读取Cookie
+
+### 抖音Cookie部署
+1. 将抖音Cookie值写入 `/opt/tiger/toutiao/app/douyin_cookie.txt`
+2. 启动服务，系统会自动从固定路径读取抖音Cookie
+3. 如需更新Cookie，只需替换文件内容，重启服务即可
+
+### TikTok Cookie部署
+1. 将TikTok Cookie值写入 `/opt/tiger/toutiao/app/tiktok_cookie.txt`
+2. 启动服务，系统会自动从固定路径读取TikTok Cookie
 3. 如需更新Cookie，只需替换文件内容，重启服务即可
 
 ## 注意事项

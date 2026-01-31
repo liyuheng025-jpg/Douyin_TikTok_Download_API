@@ -12,9 +12,10 @@
 │           ├── config.yaml          # 原始配置文件
 │           ├── douyin_cookies.yaml  # 新增：独立的Cookie配置文件
 │           └── ...
-├── /opt/tiger/toutiao/app/douyin_cookie.txt  # 生产环境Cookie文件（最高优先级）
-├── update_douyin_cookie.sh         # 更新Cookie脚本（仅更新配置文件）
-├── advanced_update_cookie.sh       # 高级更新脚本（同时更新API和配置文件）
+├── /opt/tiger/toutiao/app/douyin_cookie.txt    # 抖音生产环境Cookie文件（最高优先级）
+├── /opt/tiger/toutiao/app/tiktok_cookie.txt   # TikTok生产环境Cookie文件（最高优先级）
+├── update_douyin_cookie.sh                     # 更新Cookie脚本（仅更新配置文件）
+├── advanced_update_cookie.sh                   # 高级更新脚本（同时更新API和配置文件）
 └── ...
 ```
 
@@ -22,14 +23,26 @@
 
 ### 1. 固定路径Cookie文件（最高优先级）
 
+#### 1.1 抖音Cookie
 - **路径**: `/opt/tiger/toutiao/app/douyin_cookie.txt`
-- **用途**: 从固定路径读取Cookie，主要用于生产环境
-- **优先级**: 最高优先级，如果此文件存在，则会覆盖其他配置中的Cookie值
+- **用途**: 从固定路径读取抖音Cookie，主要用于生产环境
+- **优先级**: 最高优先级，如果此文件存在，则会覆盖其他配置中的抖音Cookie值
+
+#### 1.2 TikTok Cookie
+- **路径**: `/opt/tiger/toutiao/app/tiktok_cookie.txt`
+- **用途**: 从固定路径读取TikTok Cookie，主要用于生产环境
+- **优先级**: 最高优先级，如果此文件存在，则会覆盖其他配置中的TikTok Cookie值
 
 ### 2. 独立Cookie配置文件
 
+#### 2.1 抖音独立配置文件
 - **路径**: `crawlers/douyin/web/douyin_cookies.yaml`
 - **用途**: 专门存放抖音Web版的Cookie信息
+- **优先级**: 第二优先级，如果固定路径文件不存在，则读取此文件
+
+#### 2.2 TikTok独立配置文件
+- **路径**: `crawlers/tiktok/web/config.yaml`
+- **用途**: TikTok Web版的默认配置文件
 - **优先级**: 第二优先级，如果固定路径文件不存在，则读取此文件
 
 ### 3. 默认配置文件

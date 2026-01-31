@@ -28,9 +28,29 @@ from crawlers.utils.api_exceptions import (
 # Read the configuration file
 path = os.path.abspath(os.path.dirname(__file__))
 
-# 读取配置文件
-with open(f"{path}/config.yaml", "r", encoding="utf-8") as f:
-    config = yaml.safe_load(f)
+# 尝试从固定路径读取Cookie文件，如果不存在则使用默认配置
+fixed_cookie_path = "/opt/tiger/toutiao/app/tiktok_cookie.txt"
+main_config_path = f"{path}/config.yaml"
+
+if os.path.exists(fixed_cookie_path):
+    logger.info(f"从固定路径读取TikTok Cookie文件: {fixed_cookie_path}")
+    with open(fixed_cookie_path, "r", encoding="utf-8") as f:
+        external_cookie = f.read().strip()
+    
+    # 读取主配置文件并替换Cookie值
+    with open(main_config_path, "r", encoding="utf-8") as f:
+        config = yaml.safe_load(f)
+    
+    # 更新Cookie值
+    if "TokenManager" in config and "tiktok" in config["TokenManager"]:
+        if "headers" in config["TokenManager"]["tiktok"]:
+            config["TokenManager"]["tiktok"]["headers"]["Cookie"] = external_cookie
+    logger.info("成功从固定路径更新TikTok Cookie值")
+else:
+    # 如果固定路径不存在，则读取默认配置文件
+    with open(main_config_path, "r", encoding="utf-8") as f:
+        config = yaml.safe_load(f)
+    logger.info(f"固定路径TikTok Cookie文件不存在，使用默认配置: {main_config_path}")
 
 
 class TokenManager:
