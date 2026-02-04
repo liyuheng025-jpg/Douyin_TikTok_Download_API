@@ -37,15 +37,22 @@ if os.path.exists(fixed_cookie_path):
     with open(fixed_cookie_path, "r", encoding="utf-8") as f:
         external_cookie = f.read().strip()
     
-    # 读取主配置文件并替换Cookie值
-    with open(main_config_path, "r", encoding="utf-8") as f:
-        config = yaml.safe_load(f)
-    
-    # 更新Cookie值
-    if "TokenManager" in config and "tiktok" in config["TokenManager"]:
-        if "headers" in config["TokenManager"]["tiktok"]:
-            config["TokenManager"]["tiktok"]["headers"]["Cookie"] = external_cookie
-    logger.info("成功从固定路径更新TikTok Cookie值")
+    # 检查Cookie内容是否为空
+    if external_cookie:
+        # 读取主配置文件并替换Cookie值
+        with open(main_config_path, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
+        
+        # 更新Cookie值
+        if "TokenManager" in config and "tiktok" in config["TokenManager"]:
+            if "headers" in config["TokenManager"]["tiktok"]:
+                config["TokenManager"]["tiktok"]["headers"]["Cookie"] = external_cookie
+        logger.info("成功从固定路径更新TikTok Cookie值")
+    else:
+        # 如果Cookie内容为空，则使用默认配置
+        logger.warning(f"固定路径TikTok Cookie文件内容为空，使用默认配置: {main_config_path}")
+        with open(main_config_path, "r", encoding="utf-8") as f:
+            config = yaml.safe_load(f)
 else:
     # 如果固定路径不存在，则读取默认配置文件
     with open(main_config_path, "r", encoding="utf-8") as f:

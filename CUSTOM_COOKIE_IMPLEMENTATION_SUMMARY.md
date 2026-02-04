@@ -7,12 +7,14 @@
 #### 1.1 抖音Cookie配置
 - **文件**: `crawlers/douyin/web/utils.py`
 - **修改**: 添加从固定路径 `/opt/tiger/toutiao/app/douyin_cookie.txt` 读取Cookie的功能
-- **逻辑**: 优先级顺序为 固定路径文件 > 项目内配置文件 > 默认配置
+- **逻辑**: 优先级顺序为 固定路径文件（内容不为空）> 项目内配置文件 > 默认配置
+- **容错机制**: 当固定路径文件存在但内容为空时，系统自动回退到使用默认配置
 
 #### 1.2 TikTok Cookie配置
 - **文件**: `crawlers/tiktok/web/utils.py`
 - **修改**: 添加从固定路径 `/opt/tiger/toutiao/app/tiktok_cookie.txt` 读取Cookie的功能
-- **逻辑**: 优先级顺序为 固定路径文件 > 项目内配置文件 > 默认配置
+- **逻辑**: 优先级顺序为 固定路径文件（内容不为空）> 项目内配置文件 > 默认配置
+- **容错机制**: 当固定路径文件存在但内容为空时，系统自动回退到使用默认配置
 
 ### 2. 端口修改
 - **文件**: `config.yaml`
@@ -23,6 +25,7 @@
 - **新增**: `advanced_update_cookie.sh` - 高级Cookie更新脚本
 - **新增**: `setup_fixed_cookie_path.sh` - 固定路径设置脚本
 - **新增**: `test_cookie_loading.py` - Cookie加载测试脚本
+- **新增**: `restart_service.sh` - 服务重启脚本
 
 ### 4. 文档更新
 - **更新**: `CUSTOM_COOKIE_USAGE.md` - 使用说明文档，添加固定路径说明
@@ -43,7 +46,8 @@
 
 1. **本地测试**: 运行 `python test_cookie_loading.py` 验证Cookie加载逻辑
 2. **服务启动**: 使用 `python start.py` 启动服务（端口8001）
-3. **API测试**: 使用 `curl "http://localhost:8001/api/hybrid/video_data?url=..."` 测试API
+3. **服务重启**: 使用 `./restart_service.sh` 重启服务（更新Cookie后使用）
+4. **API测试**: 使用 `curl "http://localhost:8001/api/hybrid/video_data?url=..."` 测试API
 
 ## 部署说明
 
@@ -64,4 +68,5 @@
 - 固定路径文件必须存在且可读才能被优先使用
 - Cookie文件不应包含额外的换行符或其他格式
 - 服务重启后新的Cookie才会生效
+- 更新Cookie后使用 `./restart_service.sh` 脚本重启服务
 - 确保固定路径具有适当的读取权限

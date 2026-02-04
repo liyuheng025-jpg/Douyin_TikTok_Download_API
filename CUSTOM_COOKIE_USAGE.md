@@ -16,6 +16,7 @@
 ├── /opt/tiger/toutiao/app/tiktok_cookie.txt   # TikTok生产环境Cookie文件（最高优先级）
 ├── update_douyin_cookie.sh                     # 更新Cookie脚本（仅更新配置文件）
 ├── advanced_update_cookie.sh                   # 高级更新脚本（同时更新API和配置文件）
+├── restart_service.sh                          # 服务重启脚本
 └── ...
 ```
 
@@ -26,12 +27,14 @@
 #### 1.1 抖音Cookie
 - **路径**: `/opt/tiger/toutiao/app/douyin_cookie.txt`
 - **用途**: 从固定路径读取抖音Cookie，主要用于生产环境
-- **优先级**: 最高优先级，如果此文件存在，则会覆盖其他配置中的抖音Cookie值
+- **优先级**: 最高优先级，如果此文件存在且内容不为空，则会覆盖其他配置中的抖音Cookie值
+- **容错机制**: 如果文件存在但内容为空，系统将自动回退使用默认配置
 
 #### 1.2 TikTok Cookie
 - **路径**: `/opt/tiger/toutiao/app/tiktok_cookie.txt`
 - **用途**: 从固定路径读取TikTok Cookie，主要用于生产环境
-- **优先级**: 最高优先级，如果此文件存在，则会覆盖其他配置中的TikTok Cookie值
+- **优先级**: 最高优先级，如果此文件存在且内容不为空，则会覆盖其他配置中的TikTok Cookie值
+- **容错机制**: 如果文件存在但内容为空，系统将自动回退使用默认配置
 
 ### 2. 独立Cookie配置文件
 
@@ -137,3 +140,20 @@ TokenManager:
 - 确认Cookie格式正确
 - 检查Cookie是否已过期
 - 确认是否包含必需的所有Cookie字段
+
+## 服务重启
+
+当更新Cookie文件（特别是固定路径的Cookie文件）后，需要重启服务才能使更改生效。
+
+### 使用重启脚本
+
+```bash
+# 执行重启脚本
+./restart_service.sh
+```
+
+该脚本会：
+1. 自动查找并终止现有的服务进程
+2. 等待端口释放
+3. 启动新的服务实例
+4. 输出服务状态信息
