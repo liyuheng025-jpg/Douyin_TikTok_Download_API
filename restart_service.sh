@@ -5,23 +5,76 @@
 
 echo "🔄 开始重启Douyin_TikTok_Download_API服务..."
 
-# 查找并终止现有的服务进程
-echo "🔍 查找现有服务进程..."
-EXISTING_PIDS=$(lsof -i :8001 2>/dev/null | grep LISTEN | awk '{print $2}' | grep -v PID)
+# 更全面地终止所有可能的相关进程
+# 终止可能存在的Python相关进程
+echo "🔍 查找并终止所有相关的Python进程..."
+pkill -f "python.*start.py" 2>/dev/null
+pkill -f "uvicorn" 2>/dev/null
+pkill -f "Douyin_TikTok_Download_API" 2>/dev/null
+pkill -f "fastapi" 2>/dev/null
 
-if [ -n "$EXISTING_PIDS" ]; then
-    echo "🛑 终止现有服务进程 (PID: $EXISTING_PIDS)"
-    kill -TERM $EXISTING_PIDS 2>/dev/null
-    # 等待优雅关闭，如果进程未退出，则强制终止
+# 切换到项目目录
+cd /opt/tiger/toutiao/app/Douyin_TikTok_Download_API
+
+# 查找并终止占用8001端口的进程
+echo "🔍 查找并终止占用8001端口的进程..."
+PORT8001_PIDS=$(lsof -i :8001 2>/dev/null | grep LISTEN | awk '{print $2}' | grep -v PID)
+
+if [ -n "$PORT8001_PIDS" ]; then
+    echo "🛑 终止占用8001端口的进程 (PIDs: $PORT8001_PIDS)"
+    kill -TERM $PORT8001_PIDS 2>/dev/null
     sleep 3
+    # 再次检查并强制终止
     STILL_RUNNING=$(lsof -i :8001 2>/dev/null | grep LISTEN | awk '{print $2}' | grep -v PID)
     if [ -n "$STILL_RUNNING" ]; then
-        echo "⚠️  服务未优雅关闭，执行强制终止"
+        echo "⚠️  端口8001仍被占用，执行强制终止"
         kill -9 $STILL_RUNNING 2>/dev/null
     fi
 else
-    echo "ℹ️  未发现运行中的服务进程"
+    echo "ℹ️  未发现占用8001端口的进程"
 fi
+
+# 查找并终止可能的start.py进程
+echo "🔍 查找并终止可能的start.py进程..."
+START_PY_PIDS=$(ps aux | grep start.py | grep -v grep | awk '{print $2}')
+
+if [ -n "$START_PY_PIDS" ]; then
+    echo "🛑 终止start.py相关进程 (PIDs: $START_PY_PIDS)"
+    kill -TERM $START_PY_PIDS 2>/dev/null
+    sleep 2
+    # 检查是否还有进程在运行
+    for pid in $START_PY_PIDS; do
+        if kill -0 $pid 2>/dev/null; then
+            echo "⚠️  PID $pid 仍在运行，执行强制终止"
+            kill -9 $pid 2>/dev/null
+        fi
+    done
+    sleep 1
+else
+    echo "ℹ️  未发现start.py相关进程"
+fi
+
+# 检查是否有其他可能的API服务端口被占用
+echo "🔍 检查其他可能的API服务端口..."
+for port in {8000..8010}; do
+    if [ $port -ne 8001 ]; then
+        OTHER_PORT_PIDS=$(lsof -i :$port 2>/dev/null | grep LISTEN | awk '{print $2}' | grep -v PID)
+        if [ -n "$OTHER_PORT_PIDS" ]; then
+            # 检查这些进程是否与我们的应用相关
+            for pid in $OTHER_PORT_PIDS; do
+                if ps -p $pid -o args= 2>/dev/null | grep -q -E "(uvicorn|fastapi|python.*start|Douyin_TikTok_Download)"; then
+                    echo "🛑 发现相关API服务运行在端口 $port (PID: $pid)，正在终止..."
+                    kill -TERM $pid 2>/dev/null
+                    sleep 1
+                    # 如果进程仍在运行，则强制终止
+                    if kill -0 $pid 2>/dev/null; then
+                        kill -9 $pid 2>/dev/null
+                    fi
+                fi
+            done
+        fi
+    fi
+done
 
 # 等待端口释放
 echo "⏳ 等待端口8001释放..."
@@ -56,6 +109,19 @@ else
     exit 1
 fi
 
+# 检查依赖
+echo "📦 检查依赖包..."
+if [ -f "requirements.txt" ]; then
+    echo "✅ 发现requirements.txt，跳过依赖安装（假设已安装）"
+else
+    echo "⚠️  未找到requirements.txt文件"
+fi
+
+# 检查start.py文件
+if [ ! -f "start.py" ]; then
+    echo "❌ 未找到start.py文件，请在项目根目录下运行此脚本"
+    exit 1
+fi
 
 # 启动服务
 echo "🚀 启动Douyin_TikTok_Download_API服务..."
