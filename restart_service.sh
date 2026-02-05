@@ -90,10 +90,17 @@ done
 echo "✅ 端口8001已释放"
 
 
-# 启动服务
+# 启动服务 - 根据当前目录决定使用哪个路径
 echo "🚀 启动Douyin_TikTok_Download_API服务..."
-nohup sh /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/start.sh > /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/service.log 2>&1 &
-SERVICE_PID=$!
+if [ -f "start.sh" ]; then
+    # 在项目根目录，使用当前目录下的start.sh
+    nohup sh ./start.sh > service.log 2>&1 &
+    SERVICE_PID=$!
+else
+    # 使用服务器路径
+    nohup sh /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/start.sh > /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/service.log 2>&1 &
+    SERVICE_PID=$!
+fi
 
 if [ $? -eq 0 ]; then
     echo "✅ 服务启动成功！"
