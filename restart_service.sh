@@ -125,7 +125,7 @@ fi
 
 # 启动服务
 echo "🚀 启动Douyin_TikTok_Download_API服务..."
-nohup $PYTHON_CMD /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/start.py > service.log 2>&1 &
+nohup python3 /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/start.py > /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/service.log 2>&1 &
 SERVICE_PID=$!
 
 if [ $? -eq 0 ]; then
