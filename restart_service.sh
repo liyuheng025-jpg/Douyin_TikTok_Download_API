@@ -13,8 +13,6 @@ pkill -f "uvicorn" 2>/dev/null
 pkill -f "Douyin_TikTok_Download_API" 2>/dev/null
 pkill -f "fastapi" 2>/dev/null
 
-# 切换到项目目录
-cd /opt/tiger/toutiao/app/Douyin_TikTok_Download_API
 
 # 查找并终止占用8001端口的进程
 echo "🔍 查找并终止占用8001端口的进程..."
@@ -91,26 +89,11 @@ done
 
 echo "✅ 端口8001已释放"
 
-# 检查依赖
-echo "📦 检查依赖包..."
-if [ -f "requirements.txt" ]; then
-    echo "✅ 发现requirements.txt，跳过依赖安装（假设已安装）"
-else
-    echo "⚠️  未找到requirements.txt文件"
-fi
-
-# 检查start.py文件
-if [ ! -f "start.py" ]; then
-    echo "❌ 未找到start.py文件，请在项目根目录下运行此脚本"
-    exit 1
-fi
 
 # 启动服务
 echo "🚀 启动Douyin_TikTok_Download_API服务..."
-nohup python3 start.py > /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/service.log 2>&1 &
+nohup sh /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/start.sh > /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/service.log 2>&1 &
 SERVICE_PID=$!
-
-cd /opt/tiger/toutiao/app/
 
 if [ $? -eq 0 ]; then
     echo "✅ 服务启动成功！"
