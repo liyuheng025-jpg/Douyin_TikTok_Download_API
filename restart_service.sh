@@ -7,26 +7,45 @@ echo "🔄 开始重启Douyin_TikTok_Download_API服务..."
 
 # 查找并终止现有的服务进程
 echo "🔍 查找现有服务进程..."
-EXISTING_PIDS=$(ps aux | grep "start.py" | grep -v grep | awk '{print $2}')
+EXISTING_PIDS=$(lsof -i :8001 2>/dev/null | grep LISTEN | awk '{print $2}' | grep -v PID)
 
 if [ -n "$EXISTING_PIDS" ]; then
-    echo "🛑 终止现有服务进程: $EXISTING_PIDS"
-    kill -9 $EXISTING_PIDS 2>/dev/null
+    echo "🛑 终止现有服务进程 (PID: $EXISTING_PIDS)"
+    kill -TERM $EXISTING_PIDS 2>/dev/null
+    # 等待优雅关闭，如果进程未退出，则强制终止
     sleep 3
+    STILL_RUNNING=$(lsof -i :8001 2>/dev/null | grep LISTEN | awk '{print $2}' | grep -v PID)
+    if [ -n "$STILL_RUNNING" ]; then
+        echo "⚠️  服务未优雅关闭，执行强制终止"
+        kill -9 $STILL_RUNNING 2>/dev/null
+    fi
 else
     echo "ℹ️  未发现运行中的服务进程"
 fi
 
 # 等待端口释放
 echo "⏳ 等待端口8001释放..."
+MAX_WAIT=30
+WAIT_COUNT=0
 while lsof -i :8001 >/dev/null 2>&1; do
     sleep 1
+    ((WAIT_COUNT++))
+    if [ $WAIT_COUNT -ge $MAX_WAIT ]; then
+        echo "⚠️  等待超时，继续启动服务"
+        break
+    fi
 done
 
 echo "✅ 端口8001已释放"
 
 # 检查Python环境
-if command -v python3 &> /dev/null; then
+if [ -f "venv310/bin/python3" ]; then
+    echo "🔋 使用Python 3.10虚拟环境"
+    PYTHON_CMD="venv310/bin/python3"
+elif [ -f "venv/bin/python" ]; then
+    echo "🔋 使用虚拟环境"
+    PYTHON_CMD="venv/bin/python"
+elif command -v python3 &> /dev/null; then
     PYTHON_CMD="python3"
     echo "✅ 发现Python3命令"
 elif command -v python &> /dev/null; then
@@ -37,28 +56,10 @@ else
     exit 1
 fi
 
-# 检查虚拟环境
-if [ -f "venv310/bin/activate" ]; then
-    echo "🔋 激活Python 3.10虚拟环境"
-    source venv310/bin/activate
-elif [ -f "venv/bin/activate" ]; then
-    echo "🔋 激活虚拟环境"
-    source venv/bin/activate
-else
-    echo "⚠️  未找到虚拟环境，使用系统Python"
-fi
-
-# 检查依赖
-echo "📦 检查依赖包..."
-if [ -f "requirements.txt" ]; then
-    echo "✅ 发现requirements.txt，跳过依赖安装（假设已安装）"
-else
-    echo "⚠️  未找到requirements.txt文件"
-fi
 
 # 启动服务
 echo "🚀 启动Douyin_TikTok_Download_API服务..."
-nohup $PYTHON_CMD start.py > service.log 2>&1 &
+nohup $PYTHON_CMD /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/start.py > service.log 2>&1 &
 SERVICE_PID=$!
 
 if [ $? -eq 0 ]; then
@@ -77,6 +78,7 @@ if [ $? -eq 0 ]; then
         echo "🎉 重启完成！"
     else
         echo "❌ 服务可能未能正常启动，请检查service.log获取更多信息"
+        echo "💡 提示: 您可以运行 'tail -f service.log' 来查看实时日志"
         exit 1
     fi
 else
