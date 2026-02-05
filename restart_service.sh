@@ -91,24 +91,6 @@ done
 
 echo "✅ 端口8001已释放"
 
-# 检查Python环境
-if [ -f "venv310/bin/python3" ]; then
-    echo "🔋 使用Python 3.10虚拟环境"
-    PYTHON_CMD="venv310/bin/python3"
-elif [ -f "venv/bin/python" ]; then
-    echo "🔋 使用虚拟环境"
-    PYTHON_CMD="venv/bin/python"
-elif command -v python3 &> /dev/null; then
-    PYTHON_CMD="python3"
-    echo "✅ 发现Python3命令"
-elif command -v python &> /dev/null; then
-    PYTHON_CMD="python"
-    echo "✅ 发现Python命令"
-else
-    echo "❌ 未找到Python命令，请确保已安装Python"
-    exit 1
-fi
-
 # 检查依赖
 echo "📦 检查依赖包..."
 if [ -f "requirements.txt" ]; then
@@ -125,8 +107,10 @@ fi
 
 # 启动服务
 echo "🚀 启动Douyin_TikTok_Download_API服务..."
-nohup python3 /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/start.py > /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/service.log 2>&1 &
+nohup python3 start.py > /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/service.log 2>&1 &
 SERVICE_PID=$!
+
+cd /opt/tiger/toutiao/app/
 
 if [ $? -eq 0 ]; then
     echo "✅ 服务启动成功！"
