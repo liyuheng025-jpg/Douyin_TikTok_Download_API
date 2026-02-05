@@ -3,6 +3,9 @@
 # 重启Douyin_TikTok_Download_API服务脚本
 # 用于在更新Cookie后重新启动服务
 
+## 回退路径
+cd opt/tiger/toutiao/app/
+
 echo "🔄 开始重启Douyin_TikTok_Download_API服务..."
 
 # 更全面地终止所有可能的相关进程
@@ -93,7 +96,6 @@ echo "✅ 端口8001已释放"
 # 启动服务 - 根据当前目录决定使用哪个路径
 echo "🚀 启动Douyin_TikTok_Download_API服务..."
 
-cd ..
 
 # 使用服务器路径
 nohup sh /opt/tiger/toutiao/app/Douyin_TikTok_Download_API/start.sh > /opt/tiger/toutiao/app/service.log 2>&1 &
